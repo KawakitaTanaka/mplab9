@@ -8,7 +8,7 @@
 #pragma config PBADEN = OFF     // PORTB digital I/O
 #pragma config LVP = OFF        // Disable Low Voltage Programming
 #pragma config CPD = OFF        // Disable Data EEPROM Code Protection
-#define _XTAL_FREQ 1000000
+#define _XTAL_FREQ 100000
 
 // ??????????
 void __interrupt(high_priority) H_ISR() {
@@ -16,7 +16,8 @@ void __interrupt(high_priority) H_ISR() {
     int value = ADRESH; 
     
     // ? ADRESH ????? PWM ????
-    CCPR1L = value / 2; // ? 8 ?????? 7 ???? PWM
+    if(value < 127)CCPR1L = value / 2; // ? 8 ?????? 7 ???? PWM
+    else CCPR1L = 127 - (value / 2);
     
     // ?? ADC ?????
     PIR1bits.ADIF = 0;
@@ -58,9 +59,7 @@ void main(void) {
     // ?? ADC
     ADCON0bits.GO = 1;
 
-    while (1) {
-        // ???????????????? PWM
-    }
+    while (1) ;
     
     return;
 }
